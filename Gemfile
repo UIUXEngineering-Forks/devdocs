@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.2.2'
+ruby '2.3.0'
 
 gem 'rake'
 gem 'thor'
@@ -34,6 +34,7 @@ group :docs do
   gem 'html-pipeline'
   gem 'progress_bar', require: false
   gem 'unix_utils', require: false
+  gem 'tty-pager', require: false
 end
 
 group :test do

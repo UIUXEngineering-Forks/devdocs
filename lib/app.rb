@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 Bundler.require :app
 
@@ -25,8 +27,15 @@ class App < Sinatra::Application
     set :docs_host, -> { File.join('', docs_prefix) }
     set :docs_path, -> { File.join(public_folder, docs_prefix) }
     set :docs_manifest_path, -> { File.join(docs_path, 'docs.json') }
-    set :docs, -> { Hash[JSON.parse(File.read(docs_manifest_path)).map! { |doc| [doc['slug'], doc] }] }
     set :default_docs, %w(css dom dom_events html http javascript)
+    set :docs, -> {
+      Hash[JSON.parse(File.read(docs_manifest_path)).map! { |doc|
+        doc['full_name'] = doc['name'].dup
+        doc['full_name'] << " #{doc['version']}" if doc['version']
+        doc['slug_without_version'] = doc['slug'].split('~').first
+        [doc['slug'], doc]
+      }]
+    }
 
     set :news_path, -> { File.join(root, assets_prefix, 'javascripts', 'news.json') }
     set :news, -> { JSON.parse(File.read(news_path)) }
@@ -46,7 +55,7 @@ class App < Sinatra::Application
   configure :test, :development do
     require 'active_support/per_thread_registry'
     require 'active_support/cache'
-    sprockets.cache = ActiveSupport::Cache.lookup_store :file_store, root.join('tmp', 'cache', 'assets')
+    sprockets.cache = ActiveSupport::Cache.lookup_store :file_store, root.join('tmp', 'cache', 'assets', environment.to_s)
   end
 
   configure :development do
@@ -113,16 +122,32 @@ class App < Sinatra::Application
       end
     end
 
+    def find_doc(slug)
+      settings.docs[slug] || begin
+        settings.docs.each do |_, doc|
+          return doc if doc['slug_without_version'] == slug
+        end
+        nil
+      end
+    end
+
+    def user_has_docs?(slug)
+      docs.include?(slug) || begin
+        slug = "#{slug}~"
+        docs.any? { |_slug| _slug.start_with?(slug) }
+      end
+    end
+
     def doc_index_urls
       docs.each_with_object [] do |slug, result|
         if doc = settings.docs[slug]
-          result << File.join('', settings.docs_prefix, doc['index_path']) + "?#{doc['mtime']}"
+          result << File.join('', settings.docs_prefix, slug, 'index.json') + "?#{doc['mtime']}"
         end
       end
     end
 
     def doc_index_page?
-      @doc && request.path == "/#{@doc['slug']}/"
+      @doc && (request.path == "/#{@doc['slug']}/" || request.path == "/#{@doc['slug_without_version']}/")
     end
 
     def query_string_for_redirection
@@ -245,14 +270,14 @@ class App < Sinatra::Application
     settings.news_feed
   end
 
-  get %r{\A/(\w+)(\-[\w\-]+)?(/.*)?\z} do |doc, type, rest|
-    return 404 unless @doc = settings.docs[doc]
+  get %r{\A/([\w~\.]+)(\-[\w\-]+)?(/.*)?\z} do |doc, type, rest|
+    return 404 unless @doc = find_doc(doc)
 
     if rest.nil?
       redirect "/#{doc}#{type}/#{query_string_for_redirection}"
     elsif rest.length > 1 && rest.end_with?('/')
       redirect "/#{doc}#{type}#{rest[0...-1]}#{query_string_for_redirection}"
-    elsif docs.include?(doc) && supports_js_redirection?
+    elsif user_has_docs?(doc) && supports_js_redirection?
       redirect_via_js(request.path)
     else
       erb :other

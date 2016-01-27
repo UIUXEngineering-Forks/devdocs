@@ -57,7 +57,7 @@ app.templates.aboutPage = -> """
 
   <h2 class="_lined-heading" id="copyright">Copyright and License</h2>
   <p class="_note">
-    <strong>Copyright 2013&ndash;2015 Thibaut Courouble and <a href="https://github.com/Thibaut/devdocs/graphs/contributors">other contributors</a></strong><br>
+    <strong>Copyright 2013&ndash;2016 Thibaut Courouble and <a href="https://github.com/Thibaut/devdocs/graphs/contributors">other contributors</a></strong><br>
     This software is licensed under the terms of the Mozilla Public License v2.0.<br>
     You may obtain a copy of the source code at <a href="https://github.com/Thibaut/devdocs">github.com/Thibaut/devdocs</a>.<br>
     For more information, see the <a href="https://github.com/Thibaut/devdocs/blob/master/COPYRIGHT">COPYRIGHT</a>
@@ -146,7 +146,7 @@ credits = [
     'https://api.drupal.org/api/drupal/LICENSE.txt'
   ], [
     'Ember.js',
-    '2015 Yehuda Katz, Tom Dale and Ember.js contributors',
+    '2016 Yehuda Katz, Tom Dale and Ember.js contributors',
     'MIT',
     'https://raw.github.com/emberjs/ember.js/master/LICENSE'
   ], [
@@ -216,7 +216,7 @@ credits = [
     'http://creativecommons.org/licenses/by/3.0/'
   ], [
     'Lo-Dash',
-    '2012-2015 The Dojo Foundation',
+    '2012-2016 The Dojo Foundation',
     'MIT',
     'https://raw.github.com/lodash/lodash/master/LICENSE.txt'
   ], [
@@ -351,7 +351,7 @@ credits = [
     'https://raw.githubusercontent.com/rethinkdb/docs/master/LICENSE'
   ], [
     'Ruby',
-    '1993-2015 Yukihiro Matsumoto',
+    '1993-2016 Yukihiro Matsumoto',
     'Ruby',
     'https://www.ruby-lang.org/en/about/license.txt'
   ], [
@@ -361,7 +361,7 @@ credits = [
     'https://raw.github.com/rails/rails/master/activerecord/MIT-LICENSE'
   ], [
     'Rust',
-    '2011-2015 The Rust Project Developers',
+    '2016 The Rust Project Developers',
     'MIT',
     'https://raw.githubusercontent.com/rust-lang/rust/master/LICENSE-MIT'
   ], [
@@ -381,7 +381,7 @@ credits = [
     'https://raw.githubusercontent.com/Automattic/socket.io/master/LICENSE'
   ], [
     'Symfony',
-    '2004-2015 Fabien Potencier',
+    '2004-2016 Fabien Potencier',
     'MIT',
     'http://symfony.com/doc/current/contributing/code/license.html'
   ], [
@@ -406,8 +406,8 @@ credits = [
     'https://raw.githubusercontent.com/webpack/webpack/master/LICENSE'
   ], [
     'Yii',
-    '2008-2015 by Yii Software LLC',
+    '2008-2016 by Yii Software LLC',
     'BSD',
-    'https://raw.github.com/yiisoft/yii/master/LICENSE'
+    'https://raw.githubusercontent.com/yiisoft/yii/master/LICENSE'
   ]
 ]

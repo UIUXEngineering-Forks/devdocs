@@ -16,6 +16,7 @@
     @store = new Store
     @appCache = new app.AppCache if app.AppCache.isEnabled()
     @settings = new app.Settings @store
+    @db = new app.DB()
 
     @docs = new app.collections.Docs
     @disabledDocs = new app.collections.Docs
@@ -75,6 +76,7 @@
     docs = @settings.getDocs()
     for doc in @DOCS
       (if docs.indexOf(doc.slug) >= 0 then @docs else @disabledDocs).add(doc)
+    @migrateDocs()
     @docs.sort()
     @disabledDocs.sort()
     @docs.load @start.bind(@), @onBootError.bind(@), readCache: true, writeCache: true
@@ -85,7 +87,6 @@
     @entries.add doc.toEntry() for doc in @docs.all()
     @entries.add doc.toEntry() for doc in @disabledDocs.all()
     @initDoc(doc) for doc in @docs.all()
-    @db = new app.DB()
     @trigger 'ready'
     @router.start()
     @hideLoading()
@@ -99,6 +100,15 @@
     @entries.add doc.entries.all()
     return
 
+  migrateDocs: ->
+    for slug in @settings.getDocs() when not @docs.findBy('slug', slug)
+      needsSaving = true
+      if doc = @disabledDocs.findBy('slug_without_version', slug)
+        @disabledDocs.remove(doc)
+        @docs.add(doc)
+
+    @saveDocs() if needsSaving
+
   enableDoc: (doc, _onSuccess, onError) ->
     return if @docs.contains(doc)
     onSuccess = =>
@@ -106,19 +116,24 @@
       @docs.add(doc)
       @docs.sort()
       @initDoc(doc)
-      @settings.setDocs(doc.slug for doc in @docs.all())
+      @saveDocs()
       _onSuccess()
-      @appCache?.updateInBackground()
       return
 
     doc.load onSuccess, onError, writeCache: true
     return
+
+  saveDocs: ->
+    @settings.setDocs(doc.slug for doc in @docs.all())
+    @db.migrate()
+    @appCache?.updateInBackground()
 
   welcomeBack: ->
     visitCount = @settings.get('count')
     @settings.set 'count', ++visitCount
     new app.views.Notif 'Share', autoHide: null if visitCount is 5
     new app.views.News()
+    new app.views.Updates()
     @updateChecker = new app.UpdateChecker()
 
   reload: ->

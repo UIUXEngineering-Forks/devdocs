@@ -29,8 +29,7 @@ app.templates.offlinePage = (docs) -> """
     <dt>Can I close the tab/browser?
     <dd>#{canICloseTheTab()}
     <dt>What if I don't update a documentation?
-    <dd>You'll see outdated content and some pages will be missing or broken, since the rest of the app (including data for the search and sidebar) uses a different caching mechanism which is updated automatically.<br>
-        Documentation versioning is planned for the future but not yet supported, sorry.
+    <dd>You'll see outdated content and some pages will be missing or broken, since the rest of the app (including data for the search and sidebar) uses a different caching mechanism which is updated automatically.
     <dt>I found a bug, where do I report it?
     <dd>In the <a href="https://github.com/Thibaut/devdocs/issues">issue tracker</a>. Thanks!
     <dt>How do I uninstall/reset the app?
@@ -54,7 +53,7 @@ app.templates.offlineDoc = (doc, status) ->
 
   html = """
     <tr data-slug="#{doc.slug}"#{if outdated then ' class="_highlight"' else ''}>
-      <td class="_docs-name _icon-#{doc.slug}">#{doc.name}</td>
+      <td class="_docs-name _icon-#{doc.icon}">#{doc.fullName}</td>
       <td class="_docs-size">#{Math.ceil(doc.db_size / 100000) / 10} MB</td>
   """
 

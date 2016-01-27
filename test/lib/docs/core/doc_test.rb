@@ -44,6 +44,17 @@ class DocsDocTest < MiniTest::Spec
     it "returns 'doc' when the class is Docs::Doc" do
       assert_equal 'doc', Docs::Doc.slug
     end
+
+    it "returns 'doc~4.2_lts' when the class is Docs::Doc and its #version is '42 LTS'" do
+      stub(Docs::Doc).version { '4.2 LTS' }
+      assert_equal 'doc~4.2_lts', Docs::Doc.slug
+    end
+
+    it "returns 'foo~42' when #slug has been set to 'foo' and #version to '42'" do
+      doc.slug = 'foo'
+      doc.version = '42'
+      assert_equal 'foo~42', doc.slug
+    end
   end
 
   describe ".slug=" do
@@ -54,9 +65,16 @@ class DocsDocTest < MiniTest::Spec
   end
 
   describe ".version=" do
-    it "stores .version" do
-      doc.version = '1'
-      assert_equal '1', doc.version
+    it "stores .version as a string" do
+      doc.version = 4815162342
+      assert_equal '4815162342', doc.version
+    end
+  end
+
+  describe ".release=" do
+    it "stores .release" do
+      doc.release = '1'
+      assert_equal '1', doc.release
     end
   end
 
@@ -115,11 +133,19 @@ class DocsDocTest < MiniTest::Spec
       assert_instance_of Hash, doc.as_json
     end
 
-    it "includes the doc's name, slug, type, version, index_path and db_path" do
-      %w(name slug type version index_path db_path links).each do |attribute|
+    it "includes the doc's name, slug, type, version, and release" do
+      assert_equal %i(name slug type), doc.as_json.keys
+
+      %w(name slug type version release links).each do |attribute|
         eval "stub(doc).#{attribute} { attribute }"
         assert_equal attribute, doc.as_json[attribute.to_sym]
       end
+    end
+
+    it "includes the doc's version when it's defined and nil" do
+      refute doc.as_json.key?(:version)
+      doc.version = nil
+      assert doc.as_json.key?(:version)
     end
   end
 
@@ -292,6 +318,40 @@ class DocsDocTest < MiniTest::Spec
       it "doesn't store files" do
         dont_allow(store).write
         doc.store_pages(store)
+      end
+    end
+  end
+
+  describe ".versions" do
+    it "returns [self] if no versions have been created" do
+      assert_equal [doc], doc.versions
+    end
+  end
+
+  describe ".version" do
+    context "with no args" do
+      it "returns @version by default" do
+        doc.version = 'v'
+        assert_equal 'v', doc.version
+      end
+    end
+
+    context "with args" do
+      it "creates a version subclass" do
+        version = doc.version('4') { self.release = '8'; self.links = ["https://#{self.version}"] }
+
+        assert_equal [version], doc.versions
+
+        assert_nil doc.version
+        assert_nil doc.release
+        refute doc.version?
+
+        assert version.version?
+        assert_equal '4', version.version
+        assert_equal '8', version.release
+        assert_equal 'name', version.name
+        assert_equal 'type', version.type
+        assert_equal ['https://4'], version.links
       end
     end
   end
