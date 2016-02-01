@@ -155,6 +155,11 @@ credits = [
     'Apache',
     'https://raw.githubusercontent.com/elixir-lang/elixir/master/LICENSE'
   ], [
+    'Erlang',
+    '1999-2015 Ericsson AB',
+    'Apache',
+    'https://raw.githubusercontent.com/erlang/otp/maint/LICENSE.txt'
+  ], [
     'Express',
     '2009-2015 TJ Holowaychuk',
     'MIT',
@@ -336,7 +341,7 @@ credits = [
     'https://raw.githubusercontent.com/facebook/react/master/LICENSE-docs'
   ], [
     'Redis',
-    '2009-2015 Salvatore Sanfilippo',
+    '2009-2016 Salvatore Sanfilippo',
     'CC BY-SA',
     'http://creativecommons.org/licenses/by-sa/4.0/'
   ], [
@@ -384,6 +389,11 @@ credits = [
     '2004-2016 Fabien Potencier',
     'MIT',
     'http://symfony.com/doc/current/contributing/code/license.html'
+  ], [
+    'Tcl/Tk',
+    'The Regents of the University of California, Sun Microsystems, Inc., Scriptics Corporation, and other parties',
+    'Tcl/Tk',
+    'http://tcl.tk/software/tcltk/license.html'
   ], [
     'Underscore.js',
     '2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors',
