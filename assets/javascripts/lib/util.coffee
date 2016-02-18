@@ -111,9 +111,9 @@ $.after = (el, value) ->
 
 $.remove = (value) ->
   if $.isCollection(value)
-    el.parentElement.removeChild(el) for el in $.makeArray(value)
+    el.parentElement?.removeChild(el) for el in $.makeArray(value)
   else
-    value.parentElement.removeChild(value)
+    value.parentElement?.removeChild(value)
   return
 
 $.empty = (el) ->
@@ -271,6 +271,12 @@ $.escapeRegexp = (string) ->
 
 $.urlDecode = (string) ->
   decodeURIComponent string.replace(/\+/g, '%20')
+
+$.classify = (string) ->
+  string = string.split('_')
+  for substr, i in string
+    string[i] = substr[0].toUpperCase() + substr[1..]
+  string.join('')
 
 #
 # Miscellaneous

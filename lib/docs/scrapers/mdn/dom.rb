@@ -1,8 +1,9 @@
 module Docs
   class Dom < Mdn
+    include FixRedirectionsBehavior
+
     self.name = 'DOM'
     self.base_url = 'https://developer.mozilla.org/en-US/docs/Web/API'
-    self.fix_redirections = true
 
     html_filters.push 'dom/clean_html', 'dom/entries', 'title'
 
@@ -30,7 +31,8 @@ module Docs
       /window/getAttention
       /window/messageManager
       /window/updateCommands
-      /window/pkcs11)
+      /window/pkcs11
+      /OES_texture_float)
 
     options[:skip_patterns] = [
       /NS/,
